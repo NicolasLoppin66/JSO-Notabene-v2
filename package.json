@@ -1,0 +1,32 @@
+{
+  "name": "js-oop-webpack",
+  "version": "0.0.1",
+  "description": "Introduction a webpack",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "start": "webpack serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NicolasLoppin66/Webpack-introduction.git"
+  },
+  "keywords": [
+    "webpack"
+  ],
+  "author": "Me",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NicolasLoppin66/Webpack-introduction/issues"
+  },
+  "homepage": "https://github.com/NicolasLoppin66/Webpack-introduction#readme",
+  "devDependencies": {
+    "css-loader": "^6.7.3",
+    "html-webpack-plugin": "^5.5.0",
+    "style-loader": "^3.3.1",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^3.11.3"
+  }
+}
