@@ -6,16 +6,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "watch": "webpack --watch",
     "start": "webpack serve"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/NicolasLoppin66/Webpack-introduction.git"
   },
-  "keywords": [
-    "webpack"
-  ],
   "author": "Me",
   "license": "ISC",
   "bugs": {
