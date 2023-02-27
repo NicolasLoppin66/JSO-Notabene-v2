@@ -187,8 +187,14 @@ class App {
      * Fonctionnalité de suppresion de toute les nota
     */
     handlerClearAll(evt) {
-        console.log('handlerClearAll executé');
-        // TODO 
+        // Vidage du tableau de travail
+        this.arrNotas = [];
+
+        // Mise a jours des données stockées
+        this.notaService.saveAll();
+
+        // On vide la liste à l'affichage
+        this.elOlNotaList.innerHTML = "";
     }
 }
 
