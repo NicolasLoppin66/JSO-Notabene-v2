@@ -1,15 +1,53 @@
 import '../assets/style.css';
 
-class App {
+import { Nota } from './Nota';
+import { NotaService } from './Services/NotaServices';
 
+// Propiété statique
+const
+    STORAGE_NAME = 'notabene',
+    MODE_VIEW = 'view',
+    MODE_EDIT = 'edit';
+
+class App {
+    // Element DOM
     elInputNewNotaTitle;
     elTextareaNewNotaTitle;
     elOlNotaList;
 
+    // Propriété fonctionnel
+    /**
+     * Service de données
+     */
+    notaService;
+
+    /**
+     * Tableau des nota affiché
+     */
+    arrNota = [];
+
+    /**
+     * Indicateur de l'activation d'un mode 'Edition'
+     */
+    isEditMode = false;
+
     start() {
         console.log('App démarrer ...');
 
+        // Création du service
+        this.notaService = new NotaService();
+
+        // Chargement du l'interface utilisateur
         this.loadDom();
+
+        // Récupération des anciennes données sauvegardées
+        this.arrNota = this.notaService.getAll();
+
+        // Si le storage était vide (donc que arrNotas reste vide), on sort sans rien faire de plus
+        if (this.arrNotas.length <= 0) return;
+
+        // On lance le rendu des notas
+        this.renderNotas();
     }
 
     /**
@@ -86,6 +124,21 @@ class App {
 
         // -- <header> + <main>
         document.body.append(elHeader, elMain);
+    }
+
+    /**
+     * Reconstruit l'affichage des Notas
+     */
+    renderNotas() {
+        // On vide le <ol>
+        this.elOlNotaList.innerHTML = "";
+
+        // On retrie par date de mise à jour inverse
+        this.arrNota.sort((a, b) => b.dateUpdate - a.dateUpdate);
+
+        // On parcours le tableau pour créer le DOM
+        for (let nota of this.arrNota)
+            this.elOlNotaList.append(nota.getDom());
     }
 
     // ++++ Gestionnaire d'evenement ++++
