@@ -21,7 +21,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'JavaScript Objet avec WebPack',
+            title: 'Notabene v2',
         })
     ],
     module: {

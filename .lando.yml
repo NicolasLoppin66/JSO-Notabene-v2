@@ -1,4 +1,4 @@
-name: js-oop-webpack
+name: js-oop-notabene-v2
 services:
   node:
     type: node:16
