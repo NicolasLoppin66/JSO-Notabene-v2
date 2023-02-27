@@ -1,158 +1,173 @@
 import '../assets/style.css';
 
 import { Nota } from './Nota';
-import { NotaService } from './Services/NotaServices';
+import { NotaService } from './Services/NotaService';
 
-// Propiété statique
-const
-    STORAGE_NAME = 'notabene';
+const STORAGE_NAME = 'notabene';
 
 class App {
-    // Element DOM
+
+    // ********** Eléments du DOM ********** 
     elInputNewNotaTitle;
     elTextareaNewNotaTitle;
     elOlNotaList;
 
-    // Propriété fonctionnel
+    // ********** Propriétés de fonctionnement **********
     /**
      * Service de données
      */
     notaService;
 
     /**
-     * Tableau des nota affiché
+     * Tableau des notas affichés
      */
-    arrNota = [];
+    arrNotas = [];
 
     /**
-     * Indicateur de l'activation d'un mode 'Edition'
+     * Indicateur de l'activation d'un mode "édition"
      */
     isEditMode = false;
 
+    /**
+     * Démarrage de l'application
+     */
     start() {
-        console.log('App démarrer ...');
 
-        // Création du service
+        console.log( 'App démarrée...');
+
+        // Création du service de données
         this.notaService = new NotaService();
 
-        // Chargement du l'interface utilisateur
-        this.loadDom();
+        // Chargement de l'interface utilisateur
+        this.loadDOM();
 
         // Récupération des anciennes données sauvegardées
-        this.arrNota = this.notaService.getAll();
+        this.arrNotas = this.notaService.getAll();
 
         // Si le storage était vide (donc que arrNotas reste vide), on sort sans rien faire de plus
-        if (this.arrNotas.length <= 0) return;
+        if( this.arrNotas.length <= 0 ) return;
 
         // On lance le rendu des notas
         this.renderNotas();
+
     }
 
     /**
-     * Création du DOM de l'interface graphique ( GUI )
+     * Création du DOM de l'interface graphique (GUI)
      */
-    loadDom() {
-        // Template :
-        // <header>
-        //     <h1>NotaBene</h1>
-        // <h1>NotaBene</h1> - Création <header>
-        const domHeader = document.createElement('header');
-        domHeader.innerHTML = '<h1>Notabene</h1>';
+    loadDOM() {
+        /*
+        Template:
 
-        //     <form novalidate>
-        //         <input type="text" placeholder="Titre">
-        //         <textarea placeholder="Contenu"></textarea>
-        //         <button type="button">➕</button>
-        //     </form>
-        // <form novalidate> - Création <form>
-        const elForm = document.createElement('form');
+        <header>
+            <h1>NotaBene</h1>
+
+            <form novalidate>
+                <input type="text" placeholder="Titre">
+                <textarea placeholder="Contenu"></textarea>
+                <button type="button">➕</button>
+            </form>
+
+            <div>
+                <button type="button">🗑️</button>
+            </div>
+        </header>
+
+        <main>
+            <ol id="nota-list"></ol>
+        </main>
+        */
+
+        // -- <header>
+        const elHeader = document.createElement( 'header' );
+        elHeader.innerHTML = '<h1>NotaBene</h1>';
+
+        // - <form novalidate>
+        const elForm = document.createElement( 'form' );
         elForm.noValidate = true;
 
-        // <input type="text" placeholder="Titre"> - titre
-        this.elInputNewNotaTitle = document.createElement('input');
-        this.elInputNewNotaTitle.setAttribute('type', 'text');
-        this.elInputNewNotaTitle.setAttribute('placeholder', 'Titre');
+        // <input type="text" placeholder="Titre">
+        this.elInputNewNotaTitle = document.createElement( 'input' );
+        this.elInputNewNotaTitle.setAttribute( 'type', 'text' );
+        this.elInputNewNotaTitle.setAttribute( 'placeholder', 'Titre' );
 
-        // <textarea placeholder="Contenu"></textarea> - contenu
-        this.elTextareaNewNotaTitle = document.createElement('textarea');
-        this.elTextareaNewNotaTitle.setAttribute('placeholder', 'Content');
+        // <textarea placeholder="Contenu"></textarea>
+        this.elTextareaNewNotaTitle = document.createElement( 'textarea' );
+        this.elTextareaNewNotaTitle.setAttribute( 'placeholder', 'Contenu' );
 
-        // <button type="button">➕</button> - Ajouter
-        const elBtnNewNotaAdd = document.createElement('button');
+        // <button type="button">➕</button>
+        const elBtnNewNotaAdd = document.createElement( 'button' );
         elBtnNewNotaAdd.type = 'button';
         elBtnNewNotaAdd.textContent = '➕';
-        elBtnNewNotaAdd.addEventListener('click', this.handlerAddNewNota.bind(this))
+        elBtnNewNotaAdd.addEventListener( 'click', this.handlerAddNewNota.bind( this ) );
 
-        // Injection des elements crée dans le formulaire
-        elForm.append(this.elInputNewNotaTitle, this.elTextareaNewNotaTitle, elBtnNewNotaAdd)
+        // <input> + <textarea> + <button> => <form>
+        elForm.append( this.elInputNewNotaTitle, this.elTextareaNewNotaTitle, elBtnNewNotaAdd );
 
-        //     <div>
-        //         <button type="button" id="clear-all">🗑️</button>
-        //     </div>
         // - <div>
-        const elDivClear = document.createElement('div');
+        const elDivClear = document.createElement( 'div' );
 
-        // <button type="button" id="clear-all">🗑️</button> Supprimer tous
-        const elBtnClearAll = document.createElement('button');
+        // <button type="button">🗑️</button>
+        const elBtnClearAll = document.createElement( 'button' );
         elBtnClearAll.type = 'button';
         elBtnClearAll.textContent = '🗑️';
-        elBtnClearAll.addEventListener('click', this.handlerClearAll.bind(this))
+        elBtnClearAll.addEventListener( 'click', this.handlerClearAll.bind( this ) );
 
-        // Injection du button dans la div
-        elDivClear.append(elBtnClearAll);
+        // <button> => <div>
+        elDivClear.append( elBtnClearAll );
 
-        // <form>, <div> => <header> Injection
-        elHeader.append(elForm, elDivClear);
+        // <form> + <div> => <header>
+        elHeader.append( elForm, elDivClear );
 
-        // </header>
-
-        // <main>
-        //     <ol id="nota-list"></ol>
-        // </main>
 
         // -- <main>
-        const elMain = document.createElement('main');
+        const elMain = document.createElement( 'main' );
 
         // - <ol id="nota-list"></ol>
-        this.elOlNotaList = document.createElement('ol');
+        this.elOlNotaList = document.createElement( 'ol' );
         this.elOlNotaList.id = 'nota-list';
 
         // <ol> => <main>
-        elMain.append(this.elOlNotaList);
+        elMain.append( this.elOlNotaList );
 
-        // -- <header> + <main>
-        document.body.append(elHeader, elMain);
+
+        // -- <header> + <main> => <body>
+        document.body.append( elHeader, elMain );
+        
     }
 
     /**
-     * Reconstruit l'affichage des Notas
+     * Génération de l'affchage de la liste de Notas
      */
     renderNotas() {
         // On vide le <ol>
-        this.elOlNotaList.innerHTML = "";
+        this.elOlNotaList.innerHTML = '';
 
         // On retrie par date de mise à jour inverse
-        this.arrNota.sort((a, b) => b.dateUpdate - a.dateUpdate);
+        this.arrNotas.sort( ( a, b ) => b.dateUpdate - a.dateUpdate );
 
         // On parcours le tableau pour créer le DOM
-        for (let nota of this.arrNota)
-            this.elOlNotaList.append(nota.getDom());
+        for( let nota of this.arrNotas )
+            this.elOlNotaList.append( nota.getDOM() );
     }
 
-    // ++++ Gestionnaire d'evenement ++++
+    // ********** Gestionnaires d'événements **********
+    
     /**
-     * Fiontionnalité d'ajout d'une nouvelle Nota
+     * Fonctionnalité d'ajout d'un nouveau Nota
      */
-    handlerAddNewNota(evt) {
+    handlerAddNewNota( evt ) {
+
         // On récupère le timestamp de la creation
-        let now = Date.now(),
+        let 
+            now = Date.now(),
             newTitle = this.elInputNewNotaTitle.value.trim(),
             newContent = this.elTextareaNewNotaTitle.value.trim();
 
-        if (newTitle === "" || newContent === "") {
+        if( newTitle === '' || newContent === '' ) {
             this.elInputNewNotaTitle.value
                 = this.elTextareaNewNotaTitle.value
-                = "";
+                = '';
 
             return;
         }
@@ -162,40 +177,44 @@ class App {
             title: newTitle,
             content: newContent,
             dateCreate: now,
-            dateUpdate: now,
+            dateUpdate: now
         };
 
         // On ajoute cet objet au tableau de travail
-        this.arrNotas.push(new Nota(newNotaLiteral));
+        this.arrNotas.push( new Nota( newNotaLiteral ) );
 
         // Sauvegarde des données
-        this.saveAll();
+        this.notaService.saveAll();
 
         // On vide le formulaire d'ajout
         this.elInputNewNotaTitle.value
             = this.elTextareaNewNotaTitle.value
-            = "";
+            = '';
 
         // On met le focus sur le premier champ
         this.elInputNewNotaTitle.focus();
 
         // On relance le rendu des notas
         this.renderNotas();
+
     }
 
     /**
-     * Fonctionnalité de suppresion de toute les nota
-    */
-    handlerClearAll(evt) {
+     * Fonctionnalité suppression de tous les notas
+     */
+    handlerClearAll( evt ) {
+
         // Vidage du tableau de travail
         this.arrNotas = [];
 
-        // Mise a jours des données stockées
+        // Mise à jour des données stockées
         this.notaService.saveAll();
 
         // On vide la liste à l'affichage
-        this.elOlNotaList.innerHTML = "";
+        this.elOlNotaList.innerHTML = '';
+
     }
+
 }
 
 const app = new App();

@@ -1,20 +1,23 @@
 export class NotaService {
 
     /**
-     * CRUD : Read all
+     * CRUD: Read all
      */
     getAll() {
         let result = [];
-        // TODO 
+
+        // TODO: Code
+
         return result;
     }
 
     /**
-     * CRUD : Create all
+     * CRUD: Create all
      */
     saveAll() {
-        // TODO 
-        return false
+        // TODO: Code
+
+        return false;
     }
 
 }
