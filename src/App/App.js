@@ -5,9 +5,7 @@ import { NotaService } from './Services/NotaServices';
 
 // Propiété statique
 const
-    STORAGE_NAME = 'notabene',
-    MODE_VIEW = 'view',
-    MODE_EDIT = 'edit';
+    STORAGE_NAME = 'notabene';
 
 class App {
     // Element DOM
@@ -146,16 +144,51 @@ class App {
      * Fiontionnalité d'ajout d'une nouvelle Nota
      */
     handlerAddNewNota(evt) {
-        // TODO 
-        console.log('handlerAddNota executé');
+        // On récupère le timestamp de la creation
+        let now = Date.now(),
+            newTitle = this.elInputNewNotaTitle.value.trim(),
+            newContent = this.elTextareaNewNotaTitle.value.trim();
+
+        if (newTitle === "" || newContent === "") {
+            this.elInputNewNotaTitle.value
+                = this.elTextareaNewNotaTitle.value
+                = "";
+
+            return;
+        }
+
+        // On reconstitue un objet de données
+        const newNotaLiteral = {
+            title: newTitle,
+            content: newContent,
+            dateCreate: now,
+            dateUpdate: now,
+        };
+
+        // On ajoute cet objet au tableau de travail
+        this.arrNotas.push(new Nota(newNotaLiteral));
+
+        // Sauvegarde des données
+        this.saveAll();
+
+        // On vide le formulaire d'ajout
+        this.elInputNewNotaTitle.value
+            = this.elTextareaNewNotaTitle.value
+            = "";
+
+        // On met le focus sur le premier champ
+        this.elInputNewNotaTitle.focus();
+
+        // On relance le rendu des notas
+        this.renderNotas();
     }
 
     /**
      * Fonctionnalité de suppresion de toute les nota
     */
     handlerClearAll(evt) {
-        // TODO 
         console.log('handlerClearAll executé');
+        // TODO 
     }
 }
 
