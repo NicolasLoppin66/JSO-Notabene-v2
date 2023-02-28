@@ -19,7 +19,7 @@ export class Nota {
     dateCreate;
     dateUpdate;
 
-    constructor( notaLiteral ) {
+    constructor(notaLiteral) {
 
         this.title = notaLiteral.title;
         this.content = notaLiteral.content;
@@ -33,27 +33,27 @@ export class Nota {
      */
     getDOM() {
 
-        const elLi = document.createElement( 'li' );
-        elLi.classList.add( 'nota' );
+        const elLi = document.createElement('li');
+        elLi.classList.add('nota');
         elLi.dataset.mode = MODE_VIEW;
 
-        let 
+        let
             dateCreate = new Date(this.dateCreate),
             dateUpdate = new Date(this.dateUpdate);
 
         // header
         let innerDom = '<div class="nota-header">';
         innerDom += '<div class="nota-times">';
-        innerDom +=     `<strong>création: </strong>${dateCreate.toLocaleString()}<br>`;
-        innerDom +=     `<strong>màj: </strong>${dateUpdate.toLocaleString()}`;
+        innerDom += `<strong>création: </strong>${dateCreate.toLocaleString()}<br>`;
+        innerDom += `<strong>màj: </strong>${dateUpdate.toLocaleString()}`;
         innerDom += '</div><div class="nota-cmd">';
         innerDom += '<div data-cmd="view">';
-        innerDom +=     '<button type="button" data-role="edit">✏️</button>';
-        innerDom +=     '<button type="button" data-role="delete">🗑️</button>';
+        innerDom += '<button type="button" data-role="edit">✏️</button>';
+        innerDom += '<button type="button" data-role="delete">🗑️</button>';
         innerDom += '</div>';
         innerDom += '<div data-cmd="edit">';
-        innerDom +=     '<button type="button" data-role="save">💾</button>';
-        innerDom +=     '<button type="button" data-role="cancel">❌</button>';
+        innerDom += '<button type="button" data-role="save">💾</button>';
+        innerDom += '<button type="button" data-role="cancel">❌</button>';
         innerDom += '</div>';
         innerDom += '</div></div>';
 
@@ -66,45 +66,54 @@ export class Nota {
 
         elLi.innerHTML = innerDom;
 
-        elLi.addEventListener( 'click', this.handlerClick.bind( this ) );
+        elLi.addEventListener('click', this.handlerClick.bind(this));
 
         return elLi;
 
+    }
+
+    toJSON() {
+        return {
+            title: this.title,
+            content: this.content,
+            dateCreate: this.dateCreate,
+            dateUpdate: this.dateUpdate
+        };
     }
 
     // ********** Gestionaires d'événement **********
     /**
      * Click sur un des boutons de commande du Nota
      */
-    handlerClick( evt ) {
+    handlerClick(evt) {
 
-        const 
+        const
             elLi = evt.currentTarget,
             elBtn = evt.target,
-            elTitle = elLi.querySelector( '.nota-title' ),
-            elContent = elLi.querySelector( '.nota-content' ),
-            idxLi = Array.from( elLi.parentElement.children ).indexOf( elLi ),
+            elTitle = elLi.querySelector('.nota-title'),
+            elContent = elLi.querySelector('.nota-content'),
+            idxLi = Array.from(elLi.parentElement.children).indexOf(elLi),
             objNota = app.arrNotas[idxLi];
 
         // Si le <li> n'est pas cohérent avec les datas (après manipulation de la console, ... )
-        if( ! app.isEditMode && elTitle.textContent !== objNota.title ) return;
+        if (!app.isEditMode && elTitle.textContent !== objNota.title) return;
 
-        switch( elBtn.dataset.role ) {
+        switch (elBtn.dataset.role) {
             case 'edit':
                 // Si on n'est pas sensé avoir accès à edit, on sort
-                if( app.isEditMode ) return;
+                if (app.isEditMode) return;
 
                 app.isEditMode = true;
                 elLi.dataset.mode = MODE_EDIT;
-                elTitle.contentEditable 
-                    = elContent.contentEditable 
+                elTitle.contentEditable
+                    = elContent.contentEditable
                     = true;
 
                 break;
 
             case 'delete':
                 // Si on n'est pas sensé avoir accès à delete, on sort
-                if( app.isEditMode ) return;
+                if (app.isEditMode) return;
 
                 // On supprime le nota du tableau
                 app.arrNotas.splice(idxLi, 1);
@@ -119,7 +128,7 @@ export class Nota {
 
             case 'save':
                 // Si on n'est pas sensé avoir accès à cancel, on sort
-                if( ! app.isEditMode ) return;
+                if (!app.isEditMode) return;
 
                 // Mise à jour des donnée du tableau (dataNota pointe dans le tableau)
                 objNota.dateUpdate = Date.now();
@@ -135,7 +144,7 @@ export class Nota {
 
             case 'cancel':
                 // Si on n'est pas sensé avoir accès à cancel, on sort
-                if( ! app.isEditMode ) return;
+                if (!app.isEditMode) return;
 
                 app.isEditMode = false;
                 elLi.dataset.mode = MODE_VIEW;
@@ -145,7 +154,7 @@ export class Nota {
             default:
                 return;
         }
-            
+
     }
 
 }
